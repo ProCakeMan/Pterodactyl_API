@@ -84,20 +84,19 @@ class PyCli(object):
 
 
 
-def match_server_with_userID(userID):
-    url = 'https://panel.nh-data.com/api/application/servers'
-    headers = {
-        "Authorization": "Bearer w7Kl5A628AFHKiPkwQ0mu7mnSRsEZfxwnL2zigkYRFUGyurZ",
-        "Accept": "application/json"
-    }
-    response = requests.request('GET', url, headers=headers)
-    serverList = response.json()
-    serverList = serverList['data']
-    servers = []
-    for server in serverList:
-        if server['attributes']['user'] == userID:
-            #print("Match: " + str(userID) + " " + str(server['attributes']['user']))
-            servers.append({server['attributes']['name']: server['attributes']['id']})
-        else:
-            pass
-    return servers
+def match_server_with_userID(self, userID):
+    try:
+        url = self.url + "/api/application/users"
+        response = requests.request('GET', url, headers=self.headersApplication)
+        serverList = response.json()
+        serverList = serverList['data']
+        servers = []
+        for server in serverList:
+            if server['attributes']['user'] == userID:
+                #print("Match: " + str(userID) + " " + str(server['attributes']['user']))
+                servers.append({server['attributes']['name']: server['attributes']['id']})
+            else:
+                pass
+        return servers
+    except:
+        return "Something is configured wrongly, check url and API keys."
